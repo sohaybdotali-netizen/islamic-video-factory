@@ -1,48 +1,42 @@
 {
-  "title": "قرآن کوئز: قرآن میں کل کتنی سورتیں ہیں؟",
+  "title": "Quran Quiz: Quran Mein Kitni Surahs Hain?",
   "voice": "ur-PK-AsadNeural",
   "scenes": [
     {
-      "text": "السلام علیکم! آئیے قرآن کوئز کھیلتے ہیں۔",
+      "text": "Assalamu Alaikum dosto! Aaj ka Quran quiz shuru karte hain.",
       "arabic": "",
-      "theme": "golden_light",
-      "durationInSeconds": 4
+      "theme": "night_sky",
+      "durationInSeconds": 5.5
     },
     {
-      "text": "سوال: قرآنِ پاک میں کل کتنی سورتیں ہیں؟",
+      "text": "Sawal yeh hai: Quran-e-Pak mein kitni surahs hain?",
+      "arabic": "القرآن الكريم",
+      "theme": "night_sky",
+      "durationInSeconds": 4.6
+    },
+    {
+      "text": "Sochiye... 5... 4... 3... 2... 1...",
       "arabic": "",
       "theme": "night_sky",
       "durationInSeconds": 5
     },
     {
-      "text": "آپ کے پاس سوچنے کے لیے پانچ سیکنڈ ہیں۔ ٹائمر شروع!",
-      "arabic": "",
-      "theme": "night_sky",
-      "durationInSeconds": 6
-    },
-    {
-      "text": "پانچ... چار... تین... دو... ایک...",
-      "arabic": "",
-      "theme": "night_sky",
-      "durationInSeconds": 5
-    },
-    {
-      "text": "جواب: قرآنِ مجید میں کل ایک سو چودہ سورتیں ہیں!",
+      "text": "Jawab hai: ek sau chaudah, yaani 114 surahs!",
       "arabic": "",
       "theme": "golden_light",
-      "durationInSeconds": 6
+      "durationInSeconds": 4.6
     },
     {
-      "text": "پہلی سورت الفاتحہ، اور آخری سورت الناس ہے۔",
-      "arabic": "سُورَةُ الْفَاتِحَةِ ... سُورَةُ النَّاسِ",
+      "text": "Sab se pehli surah Al-Fatiha, aur sab se aakhri surah An-Naas hai.",
+      "arabic": "سورة الفاتحة ... سورة الناس",
       "theme": "golden_light",
-      "durationInSeconds": 5
+      "durationInSeconds": 6.5
     },
     {
-      "text": "اگر آپ کو جواب معلوم تھا تو کمنٹ میں ضرور بتائیں۔ جزاک اللہ!",
+      "text": "Agar aap ko pata tha to comment mein likhein, aur video share karein. Jazakallah!",
       "arabic": "",
       "theme": "golden_light",
-      "durationInSeconds": 6
+      "durationInSeconds": 7.4
     }
   ]
 }
