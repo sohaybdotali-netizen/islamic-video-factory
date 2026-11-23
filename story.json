@@ -1,42 +1,55 @@
 {
-  "title": "Quran Quiz: Quran Mein Kitni Surahs Hain?",
+  "title": "قرآن کوئز: قرآنِ مجید میں کل کتنی سورتیں ہیں؟",
   "voice": "ur-PK-AsadNeural",
   "scenes": [
     {
-      "text": "Assalamu Alaikum dosto! Aaj ka Quran quiz shuru karte hain.",
+      "text": "السلام علیکم، میرے عزیز دوستو! آج ہم قرآنِ مجید کا ایک خوبصورت کوئز کھیلتے ہیں۔",
+      "tts_text": "اَلسَّلامُ عَلَیْکُم، مِیرے عَزِیز دوستو! آج ہَم، قُرآنِ مَجِید کا ایک خُوبصُورت کوئز کھیلتے ہیں۔",
       "arabic": "",
       "theme": "night_sky",
-      "durationInSeconds": 5.5
+      "durationInSeconds": 8
     },
     {
-      "text": "Sawal yeh hai: Quran-e-Pak mein kitni surahs hain?",
-      "arabic": "القرآن الكريم",
-      "theme": "night_sky",
-      "durationInSeconds": 4.6
+      "text": "آج کا سوال یہ ہے کہ قرآنِ مجید میں کل کتنی سورتیں ہیں؟",
+      "tts_text": "آج کا سَوال یہ ہے، کہ قُرآنِ مَجِید میں کُل کِتنی سُورَتیں ہیں؟",
+      "arabic": "",
+      "theme": "golden_light",
+      "durationInSeconds": 6
     },
     {
-      "text": "Sochiye... 5... 4... 3... 2... 1...",
+      "text": "سوچیے... 5 ... 4 ... 3 ... 2 ... 1",
+      "tts_text": "سوچیے۔",
       "arabic": "",
       "theme": "night_sky",
       "durationInSeconds": 5
     },
     {
-      "text": "Jawab hai: ek sau chaudah, yaani 114 surahs!",
+      "text": "جواب ہے: 114 سورتیں! سبحان اللہ!",
+      "tts_text": "جَواب ہے، ایک سو چودہ سُورَتیں! سُبْحانَ اللّٰہ!",
       "arabic": "",
       "theme": "golden_light",
-      "durationInSeconds": 4.6
+      "durationInSeconds": 5
     },
     {
-      "text": "Sab se pehli surah Al-Fatiha, aur sab se aakhri surah An-Naas hai.",
-      "arabic": "سورة الفاتحة ... سورة الناس",
+      "text": "قرآنِ مجید کی پہلی سورت، سورۃ الفاتحہ ہے۔",
+      "tts_text": "قُرآنِ مَجِید کی پہلی سُورَت، سُورَۃُ الفاتِحَہ ہے۔",
+      "arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
       "theme": "golden_light",
-      "durationInSeconds": 6.5
+      "durationInSeconds": 5
     },
     {
-      "text": "Agar aap ko pata tha to comment mein likhein, aur video share karein. Jazakallah!",
+      "text": "اور آخری سورت، سورۃ الناس ہے۔",
+      "tts_text": "اور آخِری سُورَت، سُورَۃُ النّاس ہے۔",
+      "arabic": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+      "theme": "night_sky",
+      "durationInSeconds": 5
+    },
+    {
+      "text": "اللہ رب العزت ہمیں قرآن پڑھنے، سمجھنے اور اس پر عمل کرنے کی توفیق عطا فرمائے۔ آمین۔ ویڈیو شیئر کرنا نہ بھولیے!",
+      "tts_text": "اَللّٰہ رَبُّ الْعِزَّت ہَمِیں، قُرآن پَڑھنے، سَمجھنے، اور اُس پَر عَمَل کَرنے کی تَوفِیق عَطا فَرمائے۔ آمِین۔ وِیڈیو شیئر کَرنا نَہ بُھولِیے!",
       "arabic": "",
       "theme": "golden_light",
-      "durationInSeconds": 7.4
+      "durationInSeconds": 9
     }
   ]
 }
