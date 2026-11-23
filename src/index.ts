@@ -1,6 +1,5 @@
 import React from 'react';
 import { registerRoot, Composition, Sequence, Audio, staticFile, useCurrentFrame, AbsoluteFill } from 'remotion';
-import storyData from '../story.json';
 
 const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdown?: number }> = ({
   speaker,
@@ -76,8 +75,6 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
           React.createElement('circle', { cx: 416, cy: 304, r: 36, fill: '#0f1f1a' })
         ),
     React.createElement('rect', { x: 40, y: 585, width: 720, height: 65, rx: 20, fill: '#7f1d1d', stroke: '#f5c767', strokeWidth: 3 }),
-
-    // LEFT SIDE: MADRASA STUDENT (using native SVG transform attribute)
     React.createElement(
       'g',
       {
@@ -123,8 +120,6 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
       React.createElement('polygon', { points: '155,595 210,545 265,595 245,595 210,562 175,595', fill: '#8d5524' }),
       React.createElement('polygon', { points: '165,542 210,552 255,542 248,532 210,542 172,532', fill: '#fffbeb' })
     ),
-
-    // RIGHT SIDE: USTAD TEACHER (using native SVG transform attribute)
     React.createElement(
       'g',
       {
@@ -138,147 +133,3 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
         strokeWidth: 4,
       }),
       React.createElement('rect', { x: 530, y: 300, width: 110, height: 120, rx: 52, fill: '#e0ac69' }),
-      React.createElement('ellipse', { cx: 585, cy: 298, rx: 70, ry: 40, fill: '#ffffff' }),
-      React.createElement('path', { d: 'M 548 272 Q 585 246 622 272 Z', fill: '#d4af37' }),
-      isBlinking
-        ? React.createElement(
-            'g',
-            null,
-            React.createElement('line', { x1: 552, y1: 350, x2: 570, y2: 350, stroke: '#1d1e2c', strokeWidth: 3 }),
-            React.createElement('line', { x1: 600, y1: 350, x2: 618, y2: 350, stroke: '#1d1e2c', strokeWidth: 3 })
-          )
-        : React.createElement(
-            'g',
-            null,
-            React.createElement('circle', { cx: 561, cy: 350, r: 6, fill: '#1d1e2c' }),
-            React.createElement('circle', { cx: 609, cy: 350, r: 6, fill: '#1d1e2c' })
-          ),
-      React.createElement('path', {
-        d: 'M 530 364 C 530 422, 558 442, 585 442 C 612 442, 640 422, 640 364 C 630 388, 612 392, 585 392 C 558 392, 540 388, 530 364 Z',
-        fill: '#2b2d42',
-      }),
-      React.createElement('ellipse', { cx: 585, cy: 394, rx: 11, ry: teacherMouth / 2, fill: '#7f1d1d' }),
-      React.createElement('polygon', { points: '520,595 585,540 650,595 628,595 585,558 542,595', fill: '#8d5524' })
-    )
-  );
-};
-
-const SceneView: React.FC<{
-  text: string;
-  arabic?: string;
-  speaker?: string;
-  durationInFrames: number;
-}> = ({ text, arabic, speaker = 'teacher', durationInFrames }) => {
-  const frame = useCurrentFrame();
-  const opacity = Math.min(1, frame / 10);
-  const isSpeaking = speaker !== 'silent' && frame < durationInFrames - 15;
-  const isUrduOrArabic = /[\u0600-\u06FF]/.test(text);
-
-  const countdown =
-    speaker === 'silent'
-      ? Math.max(1, Math.ceil((durationInFrames - frame) / 30))
-      : undefined;
-
-  const badgeLabel =
-    speaker === 'student'
-      ? 'طالبِ علم (Student)'
-      : speaker === 'silent'
-      ? 'سوچنے کا وقت (5 سیکنڈ)'
-      : 'استادِ محترم (Teacher)';
-
-  const badgeColor = speaker === 'student' ? '#38bdf8' : '#f5c767';
-
-  return React.createElement(
-    AbsoluteFill,
-    {
-      style: {
-        background: 'radial-gradient(circle at 50% 28%, #1e332c 0%, #070c0a 100%)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '55px 50px 80px 50px',
-      },
-    },
-    React.createElement(
-      'div',
-      { style: { minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' } },
-      arabic
-        ? React.createElement(
-            'div',
-            {
-              dir: 'rtl',
-              style: {
-                fontFamily: "'Noto Naskh Arabic', 'Amiri', serif",
-                fontSize: 52,
-                color: '#f5c767',
-                fontWeight: 'bold',
-                lineHeight: 1.6,
-                textAlign: 'center',
-                backgroundColor: 'rgba(0,0,0,0.4)',
-                padding: '14px 30px',
-                borderRadius: 20,
-                border: '1px solid rgba(245,199,103,0.35)',
-              },
-            },
-            arabic
-          )
-        : null
-    ),
-    React.createElement(
-      'div',
-      { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: -30 } },
-      React.createElement(MadrasaClassroom, { speaker, isSpeaking, countdown })
-    ),
-    React.createElement(
-      'div',
-      {
-        style: {
-          opacity,
-          width: '100%',
-          backgroundColor: 'rgba(9, 16, 14, 0.88)',
-          border: `2px solid ${badgeColor}`,
-          borderRadius: 32,
-          padding: '32px 40px 38px 40px',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
-          textAlign: 'center',
-          position: 'relative',
-        },
-      },
-      React.createElement(
-        'div',
-        {
-          dir: 'rtl',
-          style: {
-            display: 'inline-block',
-            backgroundColor: badgeColor,
-            color: '#070c0a',
-            fontFamily: "'Noto Nastaliq Urdu', sans-serif",
-            fontSize: 28,
-            fontWeight: 'bold',
-            padding: '4px 24px',
-            borderRadius: 999,
-            marginBottom: 14,
-          },
-        },
-        badgeLabel
-      ),
-      React.createElement(
-        'div',
-        {
-          dir: isUrduOrArabic ? 'rtl' : 'ltr',
-          style: {
-            fontFamily: isUrduOrArabic ? "'Noto Nastaliq Urdu', serif" : 'sans-serif',
-            fontSize: isUrduOrArabic ? 52 : 48,
-            lineHeight: isUrduOrArabic ? 2.2 : 1.4,
-            fontWeight: 700,
-            color: '#ffffff',
-            textShadow: '0 4px 16px rgba(0,0,0,0.9)',
-          },
-        },
-        text
-      )
-    )
-  );
-};
-
