@@ -25,19 +25,34 @@ jobs:
               data = json.load(f)
 
           voice = data.get('voice', 'ur-PK-AsadNeural')
-          rate = '-12%' if 'ur-' in voice else '+0%'
-          pitch = '-4Hz' if 'ur-' in voice else '+0Hz'
+          rate = '-8%' if 'ur-' in voice else '+0%'
+          pitch = '-3Hz' if 'ur-' in voice else '+0Hz'
 
           def clean_urdu_tts(t):
-              t = t.replace('ﷺ', ' صَلَّی اللّٰہُ عَلَیْہِ وَسَلَّم ')
-              t = t.replace('ؓ', ' رَضِیَ اللّٰہُ عَنْہ ')
-              t = t.replace('ؑ', ' عَلَیْہِ السَّلَام ')
-              t = t.replace('۔', '. ').replace('،', ', ')
+              # 1. Remove ALL Arabic diacritics (Zabar, Zer, Pesh, Tashdeed) that confuse ur-PK-AsadNeural
+              t = re.sub(r'[\u064B-\u065F\u0670]', '', t)
+              # 2. Expand Islamic honorifics into plain, natural Urdu words
+              t = t.replace('ﷺ', ' صلی اللہ علیہ وسلم ')
+              t = t.replace('ؓ', ' رضی اللہ عنہ ')
+              t = t.replace('ؑ', ' علیہ السلام ')
+              # 3. Fix specific words ur-PK-AsadNeural misreads
+              replacements = {
+                  'قرآن': 'قران',
+                  'ویڈیو': 'وڈیو',
+                  'کوئز': 'کوز',
+                  'آخری': 'آخری',
+                  'سورتیں': 'سورتیں',
+                  '۔': '. ',
+                  '،': ', '
+              }
+              for old, new in replacements.items():
+                  t = t.replace(old, new)
               return re.sub(r'\s+', ' ', t).strip()
 
           clip_files = []
           for i, scene in enumerate(data['scenes']):
-              spoken = clean_urdu_tts(scene.get('tts_text') or scene['text'])
+              # Always read plain clean Urdu text
+              spoken = clean_urdu_tts(scene['text'])
               clip = f"public/scene_{i}.mp3"
               subprocess.run(['edge-tts', '--voice', voice, f'--rate={rate}', f'--pitch={pitch}', '--text', spoken, '--write-media', clip], check=True)
               audio = MP3(clip)
