@@ -1,11 +1,5 @@
 name: Auto Render Islamic Video
-
-on:
-  push:
-    paths:
-      - 'story.json'
-  workflow_dispatch:
-
+on: [push, workflow_dispatch]
 jobs:
   build-video:
     runs-on: ubuntu-latest
@@ -26,4 +20,3 @@ jobs:
         with:
           name: Islamic-Short-Video
           path: out/video.mp4
-
