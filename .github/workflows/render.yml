@@ -31,16 +31,25 @@ jobs:
               t = t.replace('ؑ', ' علیہ السلام ')
               replacements = {
                   'قرآنِ': 'قرآن',
-                  'قرآن': 'قرآن',
-                  'مجید': 'مجید',
-                  'کوئز': 'کوئز',
                   'ویڈیو': 'وڈیو',
+                  'بتاو': 'بتاؤ',
+                  'کل کتنی': 'مجموعی طور پر کتنی',
+                  'سورت الناس': 'سورہ ان ناس',
+                  'سورہ الناس': 'سورہ ان ناس',
+                  'سورت الفاتحہ': 'سورہ فاتحہ',
+                  'سورت البقرہ': 'سورہ بقرہ',
+                  'سورت الکوثر': 'سورہ کوثر',
+                  'الرحمن': 'ار رحمن',
+                  'الرحیم': 'ار رحیم',
                   '۔': '. ',
                   '،': ', '
               }
               for old, new in replacements.items():
                   t = t.replace(old, new)
-              return re.sub(r'\s+', ' ', t).strip()
+              t = re.sub(r'\s+', ' ', t).strip()
+              if t and t[-1] not in '.؟!?':
+                  t += '.'
+              return t
 
           clip_files = []
           for i, scene in enumerate(data['scenes']):
@@ -57,7 +66,9 @@ jobs:
                   else:
                       voice, rate, pitch = data.get('voice', 'ur-PK-AsadNeural'), '-8%', '-3Hz'
 
-                  spoken = clean_urdu_tts(scene['text'])
+                  # Uses optional ttsText if provided, otherwise uses text (captions stay untouched)
+                  raw_text = scene.get('ttsText') or scene['text']
+                  spoken = clean_urdu_tts(raw_text)
                   subprocess.run(['edge-tts', '--voice', voice, f'--rate={rate}', f'--pitch={pitch}', '--text', spoken, '--write-media', clip], check=True)
                   audio = MP3(clip)
                   scene['durationInSeconds'] = round(audio.info.length + 0.5, 2)
