@@ -2,163 +2,241 @@ import React from 'react';
 import { registerRoot, Composition, Sequence, Audio, staticFile, useCurrentFrame, AbsoluteFill } from 'remotion';
 import storyData from '../story.json';
 
-const ScholarCharacter: React.FC<{ isSpeaking: boolean }> = ({ isSpeaking }) => {
+const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdown?: number }> = ({
+  speaker,
+  isSpeaking,
+  countdown,
+}) => {
   const frame = useCurrentFrame();
-
-  // Gentle breathing & head-nod motion
-  const floatY = Math.sin(frame / 18) * 6;
-  const headTilt = isSpeaking ? Math.sin(frame / 10) * 2.5 : 0;
-
-  // Natural eye blink every ~3 seconds
   const isBlinking = frame % 95 > 90;
 
-  // Lip-sync mouth opening while speaking (pauses slightly at the end of scene)
-  const mouthOpen = isSpeaking ? Math.abs(Math.sin(frame / 2.2)) * 14 + 3 : 2;
+  // Teacher & Student animations
+  const teacherSpeak = speaker === 'teacher' && isSpeaking;
+  const studentSpeak = speaker === 'student' && isSpeaking;
+  const teacherMouth = teacherSpeak ? Math.abs(Math.sin(frame / 2.2)) * 12 + 3 : 2;
+  const studentMouth = studentSpeak ? Math.abs(Math.sin(frame / 2.0)) * 10 + 3 : 2;
+  const teacherTilt = teacherSpeak ? Math.sin(frame / 10) * 2.5 : 0;
+  const studentTilt = studentSpeak ? Math.sin(frame / 9) * -3 : 0;
 
   return React.createElement(
     'svg',
-    {
-      width: 540,
-      height: 600,
-      viewBox: '0 0 400 440',
-      style: {
-        transform: `translateY(${floatY}px)`,
-        filter: 'drop-shadow(0 25px 35px rgba(0,0,0,0.65))',
-      },
-    },
-    // Soft golden aura behind scholar
-    React.createElement('circle', { cx: 200, cy: 190, r: 155, fill: 'rgba(245, 199, 103, 0.12)' }),
-    React.createElement('circle', { cx: 200, cy: 190, r: 120, fill: 'rgba(245, 199, 103, 0.08)' }),
+    { width: 960, height: 820, viewBox: '0 0 800 680' },
 
-    // Shoulders & Jubbah (Robe)
+    // Warm Madrasa Arch Background
     React.createElement('path', {
-      d: 'M 75 440 C 75 315, 130 285, 200 285 C 270 285, 325 315, 325 440 Z',
-      fill: '#1b4332',
+      d: 'M 80 620 L 80 260 Q 80 60 400 60 Q 720 60 720 260 L 720 620 Z',
+      fill: '#1b2e28',
       stroke: '#d4af37',
+      strokeWidth: 5,
+    }),
+    // Inner Arch Glow
+    React.createElement('path', {
+      d: 'M 115 620 L 115 270 Q 115 100 400 100 Q 685 100 685 270 L 685 620 Z',
+      fill: '#243b33',
+    }),
+
+    // Hanging Islamic Lantern
+    React.createElement('line', { x1: 400, y1: 60, x2: 400, y2: 145, stroke: '#f5c767', strokeWidth: 3 }),
+    React.createElement('polygon', { points: '382,145 418,145 426,185 400,205 374,185', fill: '#f5c767', opacity: 0.9 }),
+    React.createElement('circle', { cx: 400, cy: 175, r: 45, fill: 'rgba(245, 199, 103, 0.16)' }),
+
+    // Chalkboard / Wall Frame in Center
+    React.createElement('rect', {
+      x: 265,
+      y: 225,
+      width: 270,
+      height: 175,
+      rx: 18,
+      fill: '#0f1f1a',
+      stroke: '#c9a227',
       strokeWidth: 4,
     }),
-    // Inner White Thobe Collar
-    React.createElement('path', {
-      d: 'M 162 285 L 200 355 L 238 285 Z',
-      fill: '#f8f9fa',
-    }),
-    // Gold Trim Lines on Jubbah
-    React.createElement('line', { x1: 162, y1: 287, x2: 162, y2: 440, stroke: '#f5c767', strokeWidth: 4 }),
-    React.createElement('line', { x1: 238, y1: 287, x2: 238, y2: 440, stroke: '#f5c767', strokeWidth: 4 }),
+    // Crescent & Star on Board (or Countdown Number during silent pause)
+    countdown !== undefined
+      ? React.createElement(
+          'g',
+          null,
+          React.createElement('circle', {
+            cx: 400,
+            cy: 312,
+            r: 58,
+            fill: 'rgba(245, 199, 103, 0.15)',
+            stroke: '#f5c767',
+            strokeWidth: 5,
+          }),
+          React.createElement(
+            'text',
+            {
+              x: 400,
+              y: 334,
+              textAnchor: 'middle',
+              fill: '#f5c767',
+              fontSize: 64,
+              fontWeight: 'bold',
+              fontFamily: 'sans-serif',
+            },
+            String(countdown)
+          )
+        )
+      : React.createElement(
+          'g',
+          null,
+          React.createElement('circle', { cx: 400, cy: 312, r: 42, fill: '#f5c767', opacity: 0.85 }),
+          React.createElement('circle', { cx: 416, cy: 304, r: 36, fill: '#0f1f1a' })
+        ),
 
-    // Head Group (tilts gently while explaining)
+    // Carpet Floor
+    React.createElement('rect', { x: 40, y: 585, width: 720, height: 65, rx: 20, fill: '#7f1d1d', stroke: '#f5c767', strokeWidth: 3 }),
+
+    // ================= LEFT SIDE: MADRASA STUDENT =================
     React.createElement(
       'g',
-      { style: { transform: `rotate(${headTilt}deg)`, transformOrigin: '200px 210px' } },
-      // Neck
-      React.createElement('rect', { x: 176, y: 245, width: 48, height: 48, rx: 14, fill: '#e0ac69' }),
-      // Ears
-      React.createElement('circle', { cx: 132, cy: 195, r: 16, fill: '#d49a55' }),
-      React.createElement('circle', { cx: 268, cy: 195, r: 16, fill: '#d49a55' }),
-      // Face
-      React.createElement('rect', { x: 135, y: 125, width: 130, height: 140, rx: 62, fill: '#e0ac69' }),
-
-      // Turban (Imamah)
-      React.createElement('ellipse', { cx: 200, cy: 120, rx: 82, ry: 48, fill: '#ffffff' }),
+      {
+        style: {
+          opacity: speaker === 'teacher' ? 0.82 : 1,
+          transform: `rotate(${studentTilt}deg)`,
+          transformOrigin: '210px 460px',
+        },
+      },
+      // Student Body (White Kurta)
       React.createElement('path', {
-        d: 'M 122 128 Q 200 155 278 128 Q 268 85 200 85 Q 132 85 122 128 Z',
-        fill: '#f1f3f5',
+        d: 'M 125 595 C 125 495, 160 475, 210 475 C 260 475, 295 495, 295 595 Z',
+        fill: '#f8f9fa',
+        stroke: '#adb5bd',
+        strokeWidth: 3,
+      }),
+      // Raised Hand when Student Answers!
+      speaker === 'student'
+        ? React.createElement('path', {
+            d: 'M 275 510 Q 305 445 292 405',
+            fill: 'none',
+            stroke: '#e0ac69',
+            strokeWidth: 18,
+            strokeLinecap: 'round',
+          })
+        : null,
+      // Student Head
+      React.createElement('rect', { x: 162, y: 360, width: 96, height: 105, rx: 46, fill: '#e0ac69' }),
+      // White Kufi Prayer Cap
+      React.createElement('path', {
+        d: 'M 162 392 Q 210 342 258 392 Z',
+        fill: '#ffffff',
         stroke: '#dee2e6',
         strokeWidth: 2,
       }),
-      React.createElement('path', {
-        d: 'M 135 110 Q 200 132 265 110',
-        fill: 'none',
-        stroke: '#ced4da',
-        strokeWidth: 3,
-      }),
-      // Top Kufi Cap Peak
-      React.createElement('path', {
-        d: 'M 155 88 Q 200 58 245 88 Z',
-        fill: '#d4af37',
-      }),
-
-      // Eyebrows
-      React.createElement('path', { d: 'M 156 168 Q 172 161 186 168', fill: 'none', stroke: '#2b2d42', strokeWidth: 4, strokeLinecap: 'round' }),
-      React.createElement('path', { d: 'M 214 168 Q 228 161 244 168', fill: 'none', stroke: '#2b2d42', strokeWidth: 4, strokeLinecap: 'round' }),
-
-      // Eyes (with natural blinking)
+      // Student Eyes
       isBlinking
         ? React.createElement(
             'g',
             null,
-            React.createElement('line', { x1: 160, y1: 184, x2: 182, y2: 184, stroke: '#2b2d42', strokeWidth: 3.5, strokeLinecap: 'round' }),
-            React.createElement('line', { x1: 218, y1: 184, x2: 240, y2: 184, stroke: '#2b2d42', strokeWidth: 3.5, strokeLinecap: 'round' })
+            React.createElement('line', { x1: 182, y1: 412, x2: 198, y2: 412, stroke: '#1d1e2c', strokeWidth: 3 }),
+            React.createElement('line', { x1: 222, y1: 412, x2: 238, y2: 412, stroke: '#1d1e2c', strokeWidth: 3 })
           )
         : React.createElement(
             'g',
             null,
-            React.createElement('circle', { cx: 171, cy: 184, r: 7, fill: '#1d1e2c' }),
-            React.createElement('circle', { cx: 173, cy: 182, r: 2.2, fill: '#ffffff' }),
-            React.createElement('circle', { cx: 229, cy: 184, r: 7, fill: '#1d1e2c' }),
-            React.createElement('circle', { cx: 231, cy: 182, r: 2.2, fill: '#ffffff' })
+            React.createElement('circle', { cx: 190, cy: 412, r: 5.5, fill: '#1d1e2c' }),
+            React.createElement('circle', { cx: 230, cy: 412, r: 5.5, fill: '#1d1e2c' })
           ),
+      // Student Mouth
+      React.createElement('ellipse', { cx: 210, cy: 440, rx: 9, ry: studentMouth / 2, fill: '#7f1d1d' }),
+      // Wooden Rehal (Bookstand) & Quran in front of Student
+      React.createElement('polygon', { points: '155,595 210,545 265,595 245,595 210,562 175,595', fill: '#8d5524' }),
+      React.createElement('polygon', { points: '165,542 210,552 255,542 248,532 210,542 172,532', fill: '#fffbeb' })
+    ),
 
-      // Nose
-      React.createElement('path', { d: 'M 200 184 L 195 208 L 204 210', fill: 'none', stroke: '#c68b48', strokeWidth: 3.5, strokeLinecap: 'round' }),
-
-      // Full Beard
+    // ================= RIGHT SIDE: USTAD (ISLAMIC TEACHER) =================
+    React.createElement(
+      'g',
+      {
+        style: {
+          opacity: speaker === 'student' ? 0.82 : 1,
+          transform: `rotate(${teacherTilt}deg)`,
+          transformOrigin: '585px 430px',
+        },
+      },
+      // Teacher Jubbah
       React.createElement('path', {
-        d: 'M 135 198 C 135 268, 168 292, 200 292 C 232 292, 265 268, 265 198 C 254 226, 232 232, 200 232 C 168 232, 146 226, 135 198 Z',
+        d: 'M 480 595 C 480 465, 525 440, 585 440 C 645 440, 690 465, 690 595 Z',
+        fill: '#14532d',
+        stroke: '#f5c767',
+        strokeWidth: 4,
+      }),
+      // Teacher Head
+      React.createElement('rect', { x: 530, y: 300, width: 110, height: 120, rx: 52, fill: '#e0ac69' }),
+      // Teacher Imamah (Turban)
+      React.createElement('ellipse', { cx: 585, cy: 298, rx: 70, ry: 40, fill: '#ffffff' }),
+      React.createElement('path', { d: 'M 548 272 Q 585 246 622 272 Z', fill: '#d4af37' }),
+      // Teacher Eyes
+      isBlinking
+        ? React.createElement(
+            'g',
+            null,
+            React.createElement('line', { x1: 552, y1: 350, x2: 570, y2: 350, stroke: '#1d1e2c', strokeWidth: 3 }),
+            React.createElement('line', { x1: 600, y1: 350, x2: 618, y2: 350, stroke: '#1d1e2c', strokeWidth: 3 })
+          )
+        : React.createElement(
+            'g',
+            null,
+            React.createElement('circle', { cx: 561, cy: 350, r: 6, fill: '#1d1e2c' }),
+            React.createElement('circle', { cx: 609, cy: 350, r: 6, fill: '#1d1e2c' })
+          ),
+      // Teacher Beard
+      React.createElement('path', {
+        d: 'M 530 364 C 530 422, 558 442, 585 442 C 612 442, 640 422, 640 364 C 630 388, 612 392, 585 392 C 558 392, 540 388, 530 364 Z',
         fill: '#2b2d42',
       }),
-
-      // Animated Speaking Mouth
-      React.createElement('ellipse', {
-        cx: 200,
-        cy: 235,
-        rx: 13,
-        ry: mouthOpen / 2,
-        fill: '#7f1d1d',
-        stroke: '#e0ac69',
-        strokeWidth: 2,
-      })
+      // Teacher Speaking Mouth
+      React.createElement('ellipse', { cx: 585, cy: 394, rx: 11, ry: teacherMouth / 2, fill: '#7f1d1d' }),
+      // Teacher Wooden Rehal
+      React.createElement('polygon', { points: '520,595 585,540 650,595 628,595 585,558 542,595', fill: '#8d5524' })
     )
   );
 };
 
-const SceneView: React.FC<{ text: string; arabic?: string; theme: string; durationInFrames: number }> = ({
-  text,
-  arabic,
-  theme,
-  durationInFrames,
-}) => {
+const SceneView: React.FC<{
+  text: string;
+  arabic?: string;
+  speaker?: string;
+  durationInFrames: number;
+}> = ({ text, arabic, speaker = 'teacher', durationInFrames }) => {
   const frame = useCurrentFrame();
-
-  // Smooth fade-in over first 12 frames
-  const opacity = Math.min(1, frame / 12);
-  const slideUp = Math.max(0, 20 - (frame / 12) * 20);
-
-  // Stop mouth movement during the 0.6s pause at the end of each scene
-  const isSpeaking = frame < durationInFrames - 18;
+  const opacity = Math.min(1, frame / 10);
+  const isSpeaking = speaker !== 'silent' && frame < durationInFrames - 15;
   const isUrduOrArabic = /[\u0600-\u06FF]/.test(text);
 
-  const bgGradient =
-    theme === 'golden_light'
-      ? 'radial-gradient(circle at 50% 30%, #3b2d1f 0%, #0d0d12 100%)'
-      : 'radial-gradient(circle at 50% 30%, #132842 0%, #060911 100%)';
+  // Calculate live 5 -> 1 countdown if this is a silent thinking scene
+  const countdown =
+    speaker === 'silent'
+      ? Math.max(1, Math.ceil((durationInFrames - frame) / 30))
+      : undefined;
+
+  const badgeLabel =
+    speaker === 'student'
+      ? 'طالبِ علم (Student)'
+      : speaker === 'silent'
+      ? 'سوچنے کا وقت (5 سیکنڈ)'
+      : 'استادِ محترم (Teacher)';
+
+  const badgeColor = speaker === 'student' ? '#38bdf8' : '#f5c767';
 
   return React.createElement(
     AbsoluteFill,
     {
       style: {
-        background: bgGradient,
+        background: 'radial-gradient(circle at 50% 28%, #1e332c 0%, #070c0a 100%)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '70px 55px 90px 55px',
+        padding: '55px 50px 80px 50px',
       },
     },
-    // Top Section: Optional Arabic Verse Banner
+
+    // Top Arabic Verse or Speaker Tag
     React.createElement(
       'div',
-      { style: { minHeight: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' } },
+      { style: { minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' } },
       arabic
         ? React.createElement(
             'div',
@@ -166,15 +244,15 @@ const SceneView: React.FC<{ text: string; arabic?: string; theme: string; durati
               dir: 'rtl',
               style: {
                 fontFamily: "'Noto Naskh Arabic', 'Amiri', serif",
-                fontSize: 56,
+                fontSize: 52,
                 color: '#f5c767',
                 fontWeight: 'bold',
-                lineHeight: 1.7,
+                lineHeight: 1.6,
                 textAlign: 'center',
-                backgroundColor: 'rgba(0,0,0,0.35)',
-                padding: '18px 34px',
-                borderRadius: 24,
-                border: '1px solid rgba(245,199,103,0.3)',
+                backgroundColor: 'rgba(0,0,0,0.4)',
+                padding: '14px 30px',
+                borderRadius: 20,
+                border: '1px solid rgba(245,199,103,0.35)',
               },
             },
             arabic
@@ -182,87 +260,21 @@ const SceneView: React.FC<{ text: string; arabic?: string; theme: string; durati
         : null
     ),
 
-    // Middle Section: Animated Islamic Scholar Character
+    // Center: Madrasa Classroom with Animated Teacher & Student
     React.createElement(
       'div',
-      { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: -20 } },
-      React.createElement(ScholarCharacter, { isSpeaking })
+      { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: -30 } },
+      React.createElement(MadrasaClassroom, { speaker, isSpeaking, countdown })
     ),
 
-    // Bottom Section: Big Exact Story Words Box
+    // Bottom: Large Caption Card with Speaker Badge
     React.createElement(
       'div',
       {
         style: {
           opacity,
-          transform: `translateY(${slideUp}px)`,
           width: '100%',
-          backgroundColor: 'rgba(10, 15, 28, 0.82)',
-          border: '2px solid rgba(245, 199, 103, 0.35)',
+          backgroundColor: 'rgba(9, 16, 14, 0.88)',
+          border: `2px solid ${badgeColor}`,
           borderRadius: 32,
-          padding: '38px 42px',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.75)',
-          textAlign: 'center',
-        },
-      },
-      React.createElement(
-        'div',
-        {
-          dir: isUrduOrArabic ? 'rtl' : 'ltr',
-          style: {
-            fontFamily: isUrduOrArabic ? "'Noto Nastaliq Urdu', serif" : 'sans-serif',
-            fontSize: isUrduOrArabic ? 54 : 50,
-            lineHeight: isUrduOrArabic ? 2.25 : 1.4,
-            fontWeight: 700,
-            color: '#ffffff',
-            textShadow: '0 4px 16px rgba(0,0,0,0.9)',
-          },
-        },
-        text
-      )
-    )
-  );
-};
-
-const MainVideo: React.FC = () => {
-  let currentFrame = 0;
-  const fps = 30;
-
-  return React.createElement(
-    AbsoluteFill,
-    { style: { backgroundColor: '#000' } },
-    React.createElement(Audio, { src: staticFile('voiceover.mp3') }),
-    storyData.scenes.map((scene, index) => {
-      const durationInFrames = Math.round(scene.durationInSeconds * fps);
-      const startFrame = currentFrame;
-      currentFrame += durationInFrames;
-
-      return React.createElement(
-        Sequence,
-        { key: index, from: startFrame, durationInFrames },
-        React.createElement(SceneView, {
-          text: scene.text,
-          arabic: scene.arabic,
-          theme: scene.theme,
-          durationInFrames,
-        })
-      );
-    })
-  );
-};
-
-export const RemotionRoot: React.FC = () => {
-  const fps = 30;
-  const totalSeconds = storyData.scenes.reduce((acc, s) => acc + s.durationInSeconds, 0);
-
-  return React.createElement(Composition, {
-    id: 'IslamicVideo',
-    component: MainVideo,
-    durationInFrames: Math.max(30, Math.round(totalSeconds * fps)),
-    fps,
-    width: 1080,
-    height: 1920,
-  });
-};
-
-registerRoot(RemotionRoot);
+          padding: '32px 40px 38px 40px',
