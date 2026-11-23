@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'story.json'
+  workflow_dispatch:
 
 jobs:
   build-video:
@@ -23,11 +24,11 @@ jobs:
           python-version: '3.11'
       - run: pip install edge-tts
 
-      - name: Generate Voiceover & Sync Durations
+      - name: Generate Voiceover
         run: |
           mkdir -p public
           python -c "
-          import json, subprocess, os
+          import json, subprocess
 
           with open('story.json', 'r', encoding='utf-8') as f:
               data = json.load(f)
