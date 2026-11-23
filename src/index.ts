@@ -76,14 +76,13 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
           React.createElement('circle', { cx: 416, cy: 304, r: 36, fill: '#0f1f1a' })
         ),
     React.createElement('rect', { x: 40, y: 585, width: 720, height: 65, rx: 20, fill: '#7f1d1d', stroke: '#f5c767', strokeWidth: 3 }),
+
+    // LEFT SIDE: MADRASA STUDENT (using native SVG transform attribute)
     React.createElement(
       'g',
       {
-        style: {
-          opacity: speaker === 'teacher' ? 0.82 : 1,
-          transform: `rotate(${studentTilt}deg)`,
-          transformOrigin: '210px 460px',
-        },
+        opacity: speaker === 'teacher' ? 0.82 : 1,
+        transform: `rotate(${studentTilt} 210 460)`,
       },
       React.createElement('path', {
         d: 'M 125 595 C 125 495, 160 475, 210 475 C 260 475, 295 495, 295 595 Z',
@@ -124,14 +123,13 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
       React.createElement('polygon', { points: '155,595 210,545 265,595 245,595 210,562 175,595', fill: '#8d5524' }),
       React.createElement('polygon', { points: '165,542 210,552 255,542 248,532 210,542 172,532', fill: '#fffbeb' })
     ),
+
+    // RIGHT SIDE: USTAD TEACHER (using native SVG transform attribute)
     React.createElement(
       'g',
       {
-        style: {
-          opacity: speaker === 'student' ? 0.82 : 1,
-          transform: `rotate(${teacherTilt}deg)`,
-          transformOrigin: '585px 430px',
-        },
+        opacity: speaker === 'student' ? 0.82 : 1,
+        transform: `rotate(${teacherTilt} 585 430)`,
       },
       React.createElement('path', {
         d: 'M 480 595 C 480 465, 525 440, 585 440 C 645 440, 690 465, 690 595 Z',
