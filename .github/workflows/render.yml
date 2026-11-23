@@ -1,1 +1,29 @@
+name: Auto Render Islamic Video
+
+on:
+  push:
+    paths:
+      - 'story.json'
+  workflow_dispatch:
+
+jobs:
+  build-video:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install edge-tts
+      - name: Generate Voiceover
+        run: mkdir -p public && python -c "import json, subprocess; d=json.load(open('story.json', encoding='utf-8')); subprocess.run(['edge-tts', '--voice', d.get('voice', 'en-US-AndrewNeural'), '--text', ' ... '.join([s['text'] for s in d['scenes']]), '--write-media', 'public/voiceover.mp3'], check=True)"
+      - run: npm install
+      - run: npx remotion render src/index.ts IslamicVideo out/video.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Islamic-Short-Video
+          path: out/video.mp4
 
