@@ -1,16 +1,46 @@
 {
-  "title": "The Power of Sabr",
-  "voice": "en-US-AndrewNeural",
+  "title": "قرآن کوئز: قرآن میں کل کتنی سورتیں ہیں؟",
+  "voice": "ur-PK-AsadNeural",
   "scenes": [
     {
-      "text": "When life feels heavy, remember that Allah never burdens a soul beyond what it can bear.",
-      "arabic": "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا",
+      "text": "السلام علیکم! آئیے قرآن کوئز کھیلتے ہیں۔",
+      "arabic": "",
+      "theme": "golden_light",
+      "durationInSeconds": 4
+    },
+    {
+      "text": "سوال: قرآنِ پاک میں کل کتنی سورتیں ہیں؟",
+      "arabic": "",
+      "theme": "night_sky",
+      "durationInSeconds": 5
+    },
+    {
+      "text": "آپ کے پاس سوچنے کے لیے پانچ سیکنڈ ہیں۔ ٹائمر شروع!",
+      "arabic": "",
       "theme": "night_sky",
       "durationInSeconds": 6
     },
     {
-      "text": "Every tear shed in patience is seen by the One who created the heavens and the earth.",
-      "arabic": "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
+      "text": "پانچ... چار... تین... دو... ایک...",
+      "arabic": "",
+      "theme": "night_sky",
+      "durationInSeconds": 5
+    },
+    {
+      "text": "جواب: قرآنِ مجید میں کل ایک سو چودہ سورتیں ہیں!",
+      "arabic": "",
+      "theme": "golden_light",
+      "durationInSeconds": 6
+    },
+    {
+      "text": "پہلی سورت الفاتحہ، اور آخری سورت الناس ہے۔",
+      "arabic": "سُورَةُ الْفَاتِحَةِ ... سُورَةُ النَّاسِ",
+      "theme": "golden_light",
+      "durationInSeconds": 5
+    },
+    {
+      "text": "اگر آپ کو جواب معلوم تھا تو کمنٹ میں ضرور بتائیں۔ جزاک اللہ!",
+      "arabic": "",
       "theme": "golden_light",
       "durationInSeconds": 6
     }
