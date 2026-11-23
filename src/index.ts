@@ -4,8 +4,10 @@ import storyData from '../story.json';
 
 const SceneView: React.FC<{ text: string; arabic?: string; theme: string }> = ({ text, arabic, theme }) => {
   const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: 'clamp' });
-  const translateY = interpolate(frame, [0, 20], [30, 0], { extrapolateRight: 'clamp' });
+  const opacity = interpolate(frame,,, { extrapolateRight: 'clamp' });
+  const translateY = interpolate(frame,,, { extrapolateRight: 'clamp' });
+
+  const isUrduOrArabic = /[\u0600-\u06FF]/.test(text);
 
   const bgGradient = theme === 'golden_light'
     ? 'radial-gradient(circle at center, #3b2d1f 0%, #0d0d12 100%)'
@@ -13,14 +15,41 @@ const SceneView: React.FC<{ text: string; arabic?: string; theme: string }> = ({
 
   return React.createElement(
     AbsoluteFill,
-    { style: { background: bgGradient, justifyContent: 'center', alignItems: 'center', padding: 60, textAlign: 'center' } },
+    { style: { background: bgGradient, justifyContent: 'center', alignItems: 'center', padding: 70, textAlign: 'center' } },
     React.createElement(
       'div',
-      { style: { opacity, transform: `translateY(${translateY}px)`, color: '#ffffff', fontFamily: 'sans-serif' } },
+      { style: { opacity, transform: `translateY(${translateY}px)`, color: '#ffffff', width: '100%' } },
       arabic
-        ? React.createElement('div', { style: { fontSize: 58, color: '#f5c767', marginBottom: 40, fontWeight: 'bold', lineHeight: 1.5 } }, arabic)
+        ? React.createElement(
+            'div',
+            {
+              dir: 'rtl',
+              style: {
+                fontFamily: "'Noto Naskh Arabic', 'Amiri', serif",
+                fontSize: 60,
+                color: '#f5c767',
+                marginBottom: 45,
+                fontWeight: 'bold',
+                lineHeight: 1.8,
+              },
+            },
+            arabic
+          )
         : null,
-      React.createElement('div', { style: { fontSize: 44, lineHeight: 1.4, fontWeight: 500, textShadow: '0 4px 20px rgba(0,0,0,0.8)' } }, text)
+      React.createElement(
+        'div',
+        {
+          dir: isUrduOrArabic ? 'rtl' : 'ltr',
+          style: {
+            fontFamily: isUrduOrArabic ? "'Noto Nastaliq Urdu', serif" : 'sans-serif',
+            fontSize: isUrduOrArabic ? 46 : 44,
+            lineHeight: isUrduOrArabic ? 2.2 : 1.4,
+            fontWeight: 500,
+            textShadow: '0 4px 20px rgba(0,0,0,0.8)',
+          },
+        },
+        text
+      )
     )
   );
 };
