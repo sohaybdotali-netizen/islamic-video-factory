@@ -39,7 +39,7 @@ jobs:
           for i, scene in enumerate(data['scenes']):
               spoken = clean_urdu_tts(scene.get('tts_text') or scene['text'])
               clip = f"public/scene_{i}.mp3"
-              subprocess.run(['edge-tts', '--voice', voice, '--rate', rate, '--pitch', pitch, '--text', spoken, '--write-media', clip], check=True)
+              subprocess.run(['edge-tts', '--voice', voice, f'--rate={rate}', f'--pitch={pitch}', '--text', spoken, '--write-media', clip], check=True)
               audio = MP3(clip)
               scene['durationInSeconds'] = round(audio.info.length + 0.6, 2)
               clip_files.append(f"file 'scene_{i}.mp3'")
