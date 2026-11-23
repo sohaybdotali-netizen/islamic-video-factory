@@ -14,7 +14,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install edge-tts mutagen
-      - name: Generate Accurate Scholar Voiceover
+      - name: Generate Accurate Scholar & Student Voiceover
         run: |
           mkdir -p public
           python - << 'EOF'
@@ -24,24 +24,20 @@ jobs:
           with open('story.json', 'r', encoding='utf-8') as f:
               data = json.load(f)
 
-          voice = data.get('voice', 'ur-PK-AsadNeural')
-          rate = '-8%' if 'ur-' in voice else '+0%'
-          pitch = '-3Hz' if 'ur-' in voice else '+0Hz'
-
           def clean_urdu_tts(t):
-              # 1. Remove ALL Arabic diacritics (Zabar, Zer, Pesh, Tashdeed) that confuse ur-PK-AsadNeural
+              # Remove extra diacritics that confuse Urdu TTS
               t = re.sub(r'[\u064B-\u065F\u0670]', '', t)
-              # 2. Expand Islamic honorifics into plain, natural Urdu words
+              # Expand Islamic honorifics into plain natural Urdu
               t = t.replace('ﷺ', ' صلی اللہ علیہ وسلم ')
               t = t.replace('ؓ', ' رضی اللہ عنہ ')
               t = t.replace('ؑ', ' علیہ السلام ')
-              # 3. Fix specific words ur-PK-AsadNeural misreads
+              # Fix specific pronunciations while keeping Alif Maddah on قرآن
               replacements = {
-                  'قرآن': 'قران',
+                  'قرآنِ': 'قرآن',
+                  'قرآن': 'قرآن',
+                  'مجید': 'مجید',
+                  'کوئز': 'کوئز',
                   'ویڈیو': 'وڈیو',
-                  'کوئز': 'کوز',
-                  'آخری': 'آخری',
-                  'سورتیں': 'سورتیں',
                   '۔': '. ',
                   '،': ', '
               }
@@ -51,12 +47,24 @@ jobs:
 
           clip_files = []
           for i, scene in enumerate(data['scenes']):
-              # Always read plain clean Urdu text
-              spoken = clean_urdu_tts(scene['text'])
+              speaker = scene.get('speaker', 'teacher')
               clip = f"public/scene_{i}.mp3"
-              subprocess.run(['edge-tts', '--voice', voice, f'--rate={rate}', f'--pitch={pitch}', '--text', spoken, '--write-media', clip], check=True)
-              audio = MP3(clip)
-              scene['durationInSeconds'] = round(audio.info.length + 0.6, 2)
+
+              if speaker == 'silent':
+                  wait_sec = float(scene.get('durationInSeconds', 5))
+                  subprocess.run(['ffmpeg', '-y', '-f', 'lavfi', '-i', 'anullsrc=r=24000:cl=mono', '-t', str(wait_sec), '-q:a', '9', clip], check=True)
+                  scene['durationInSeconds'] = wait_sec
+              else:
+                  if speaker == 'student':
+                      voice, rate, pitch = 'ur-PK-UzmaNeural', '+2%', '+18Hz'
+                  else:
+                      voice, rate, pitch = data.get('voice', 'ur-PK-AsadNeural'), '-8%', '-3Hz'
+
+                  spoken = clean_urdu_tts(scene['text'])
+                  subprocess.run(['edge-tts', '--voice', voice, f'--rate={rate}', f'--pitch={pitch}', '--text', spoken, '--write-media', clip], check=True)
+                  audio = MP3(clip)
+                  scene['durationInSeconds'] = round(audio.info.length + 0.5, 2)
+
               clip_files.append(f"file 'scene_{i}.mp3'")
 
           with open('public/list.txt', 'w', encoding='utf-8') as f:
