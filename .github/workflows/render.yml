@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Urdu Nastaliq Fonts
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-core fonts-noto-extra && fc-cache -fv
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -12,8 +14,8 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install edge-tts
-      - name: Generate Voiceover
-        run: mkdir -p public && python -c "import json, subprocess; d=json.load(open('story.json', encoding='utf-8')); subprocess.run(['edge-tts', '--voice', d.get('voice', 'en-US-AndrewNeural'), '--text', ' ... '.join([s['text'] for s in d['scenes']]), '--write-media', 'public/voiceover.mp3'], check=True)"
+      - name: Generate Scholar Voiceover
+        run: mkdir -p public && python -c "import json, subprocess; d=json.load(open('story.json', encoding='utf-8')); v=d.get('voice', 'ur-PK-AsadNeural'); rate='-12%' if 'ur-' in v else '+0%'; pitch='-4Hz' if 'ur-' in v else '+0Hz'; subprocess.run(['edge-tts', '--voice', v, '--rate', rate, '--pitch', pitch, '--text', ' ... '.join([s['text'] for s in d['scenes']]), '--write-media', 'public/voiceover.mp3'], check=True)"
       - run: npm install
       - run: npx remotion render src/index.ts IslamicVideo out/video.mp4
       - uses: actions/upload-artifact@v4
