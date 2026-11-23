@@ -5,8 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Urdu Nastaliq Fonts & FFmpeg
-        run: sudo apt-get update && sudo apt-get install -y fonts-noto-core fonts-noto-extra ffmpeg && fc-cache -fv
+      - name: Install Lightweight Urdu Fonts & FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-core ffmpeg
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -25,13 +25,10 @@ jobs:
               data = json.load(f)
 
           def clean_urdu_tts(t):
-              # Remove extra diacritics that confuse Urdu TTS
               t = re.sub(r'[\u064B-\u065F\u0670]', '', t)
-              # Expand Islamic honorifics into plain natural Urdu
               t = t.replace('ﷺ', ' صلی اللہ علیہ وسلم ')
               t = t.replace('ؓ', ' رضی اللہ عنہ ')
               t = t.replace('ؑ', ' علیہ السلام ')
-              # Fix specific pronunciations while keeping Alif Maddah on قرآن
               replacements = {
                   'قرآنِ': 'قرآن',
                   'قرآن': 'قرآن',
@@ -76,7 +73,7 @@ jobs:
               json.dump(data, f, ensure_ascii=False, indent=2)
           EOF
       - run: npm install
-      - run: npx remotion render src/index.ts IslamicVideo out/video.mp4
+      - run: npx remotion render src/index.ts IslamicVideo out/video.mp4 --timeout=90000
       - uses: actions/upload-artifact@v4
         with:
           name: Islamic-Short-Video
