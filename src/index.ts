@@ -20,7 +20,6 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
   return React.createElement(
     'svg',
     { width: 960, height: 820, viewBox: '0 0 800 680' },
-
     React.createElement('path', {
       d: 'M 80 620 L 80 260 Q 80 60 400 60 Q 720 60 720 260 L 720 620 Z',
       fill: '#1b2e28',
@@ -31,11 +30,9 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
       d: 'M 115 620 L 115 270 Q 115 100 400 100 Q 685 100 685 270 L 685 620 Z',
       fill: '#243b33',
     }),
-
     React.createElement('line', { x1: 400, y1: 60, x2: 400, y2: 145, stroke: '#f5c767', strokeWidth: 3 }),
     React.createElement('polygon', { points: '382,145 418,145 426,185 400,205 374,185', fill: '#f5c767', opacity: 0.9 }),
     React.createElement('circle', { cx: 400, cy: 175, r: 45, fill: 'rgba(245, 199, 103, 0.16)' }),
-
     React.createElement('rect', {
       x: 265,
       y: 225,
@@ -46,7 +43,6 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
       stroke: '#c9a227',
       strokeWidth: 4,
     }),
-
     countdown !== undefined
       ? React.createElement(
           'g',
@@ -79,9 +75,7 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
           React.createElement('circle', { cx: 400, cy: 312, r: 42, fill: '#f5c767', opacity: 0.85 }),
           React.createElement('circle', { cx: 416, cy: 304, r: 36, fill: '#0f1f1a' })
         ),
-
     React.createElement('rect', { x: 40, y: 585, width: 720, height: 65, rx: 20, fill: '#7f1d1d', stroke: '#f5c767', strokeWidth: 3 }),
-
     React.createElement(
       'g',
       {
@@ -130,7 +124,6 @@ const MadrasaClassroom: React.FC<{ speaker: string; isSpeaking: boolean; countdo
       React.createElement('polygon', { points: '155,595 210,545 265,595 245,595 210,562 175,595', fill: '#8d5524' }),
       React.createElement('polygon', { points: '165,542 210,552 255,542 248,532 210,542 172,532', fill: '#fffbeb' })
     ),
-
     React.createElement(
       'g',
       {
