@@ -1,0 +1,18 @@
+{
+  "title": "The Power of Sabr",
+  "voice": "en-US-AndrewNeural",
+  "scenes": [
+    {
+      "text": "When life feels heavy, remember that Allah never burdens a soul beyond what it can bear.",
+      "arabic": "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا",
+      "theme": "night_sky",
+      "durationInSeconds": 6
+    },
+    {
+      "text": "Every tear shed in patience is seen by the One who created the heavens and the earth.",
+      "arabic": "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
+      "theme": "golden_light",
+      "durationInSeconds": 6
+    }
+  ]
+}
