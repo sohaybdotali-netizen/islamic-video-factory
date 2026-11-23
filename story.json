@@ -1,31 +1,42 @@
 {
-  "title": "Madrasa Quran Quiz",
+  "title": "قرآن پاک میں کتنی سورتیں ہیں",
   "voice": "ur-PK-AsadNeural",
   "scenes": [
     {
       "speaker": "teacher",
-      "text": "پیارے بچو، آج میں آپ سے قرآن مجید کا ایک اہم سوال پوچھتا ہوں۔",
-      "durationInSeconds": 5
+      "text": "السلام علیکم بچو آج ہم قرآن پاک کے بارے میں ایک سوال کریں گے",
+      "durationInSeconds": 6
     },
     {
       "speaker": "teacher",
-      "text": "بتائیے، قرآن مجید میں کل کتنی سورتیں ہیں؟",
+      "text": "بتاو قرآن پاک میں کل کتنی سورتیں ہیں",
       "durationInSeconds": 4
     },
     {
       "speaker": "silent",
-      "text": "آپ بھی سوچ کر جواب دیں۔۔۔",
+      "text": "سوچیں اور جواب دیں",
       "durationInSeconds": 5
     },
     {
       "speaker": "student",
-      "text": "جی استاد محترم! قرآن مجید میں کل ایک سو چودہ سورتیں ہیں۔",
-      "durationInSeconds": 5
+      "text": "استاد جی میں جانتا ہوں قرآن پاک میں ایک سو چودہ سورتیں ہیں",
+      "durationInSeconds": 6
     },
     {
       "speaker": "teacher",
-      "text": "ماشاء اللہ، بالکل درست جواب! ناظرین، کیا آپ کو اس کا جواب معلوم تھا؟ کمنٹ میں ضرور بتائیں!",
-      "durationInSeconds": 7
+      "text": "ماشاءاللہ بالکل درست پہلی سورت الفاتحہ اور آخری سورت الناس ہے",
+      "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      "durationInSeconds": 6
+    },
+    {
+      "speaker": "teacher",
+      "text": "سب سے لمبی سورت البقرہ ہے اور سب سے چھوٹی سورت الکوثر",
+      "durationInSeconds": 6
+    },
+    {
+      "speaker": "teacher",
+      "text": "ناظرین آپ بتائیں سورہ الکوثر میں کتنی آیات ہیں کمنٹس میں لکھیں",
+      "durationInSeconds": 6
     }
   ]
 }
