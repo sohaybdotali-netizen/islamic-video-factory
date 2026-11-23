@@ -73,7 +73,7 @@ jobs:
               json.dump(data, f, ensure_ascii=False, indent=2)
           EOF
       - run: npm install
-      - run: npx remotion render src/index.ts IslamicVideo out/video.mp4 --timeout=90000
+      - run: npx remotion render src/index.ts IslamicVideo out/video.mp4 --bundle-cache=false
       - uses: actions/upload-artifact@v4
         with:
           name: Islamic-Short-Video
