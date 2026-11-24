@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@react-three/drei": "9.122.0",
     "@remotion/cli": "4.0.220",
     "@remotion/three": "4.0.220",
     "@react-three/fiber": "8.17.10",
