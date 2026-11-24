@@ -16,7 +16,20 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-noto-core libgl1 libegl1 libgles2 libgbm1
+- name: Install Blender for GLB character generation
+        timeout-minutes: 15
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
 
+      - name: Generate Ustad and Student 3D character assets
+        timeout-minutes: 10
+        run: |
+          mkdir -p public/assets
+          blender --background --python scripts/build_3d_characters.py
+          test -s public/assets/ustad.glb
+          test -s public/assets/student.glb
+          ls -lh public/assets/*.glb
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
