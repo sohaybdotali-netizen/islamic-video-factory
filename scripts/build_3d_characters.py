@@ -1,4 +1,3 @@
-
 name: Build Rigged 3D Characters and Preview
 
 on:
