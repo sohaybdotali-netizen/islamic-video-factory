@@ -1,1 +1,71 @@
+name: Build Rigged 3D Characters and Preview
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build_3d_characters.py'
+      - 'src/three/Classroom3D.tsx'
+      - 'package.json'
+      - '.github/workflows/3d-character-preview.yml'
+      - 'src/index.ts'
+      - 'story.json'
+
+permissions:
+  contents: read
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Blender and rendering libraries
+        timeout-minutes: 15
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender ffmpeg libgl1 libegl1 libgles2 libgbm1
+
+      - name: Generate rigged Ustad and student GLB assets
+        timeout-minutes: 10
+        run: |
+          mkdir -p public/assets
+          blender --background --factory-startup --python scripts/build_3d_characters.py
+          test -s public/assets/ustad.glb
+          test -s public/assets/student.glb
+          ls -lh public/assets/*.glb
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install project dependencies
+        timeout-minutes: 10
+        run: npm install --no-audit --no-fund
+
+      - name: Prepare public story and silent preview audio
+        run: |
+          mkdir -p public out
+          cp story.json public/story.json
+          ffmpeg -hide_banner -loglevel error -y -f lavfi -i anullsrc=r=24000:cl=mono -t 8 -c:a libmp3lame -b:a 64k public/voiceover.mp3
+
+      - name: Render first 3 seconds of the 3D classroom
+        timeout-minutes: 15
+        run: |
+          npx remotion render src/index.ts IslamicVideo out/3d-classroom-preview.mp4 --frames=0-89 --codec=h264 --crf=27 --gl=swiftshader --concurrency=1 --bundle-cache=false
+
+      - name: Upload 3D character assets and preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: Islamic-3D-Character-Preview
+          path: |
+            public/assets/ustad.glb
+            public/assets/student.glb
+            out/3d-classroom-preview.mp4
+          if-no-files-found: error
+          retention-days: 14
 
