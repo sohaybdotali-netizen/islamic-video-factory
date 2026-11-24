@@ -1,3 +1,4 @@
+
 name: Auto Render Islamic Video
 
 on: [push, workflow_dispatch]
@@ -5,7 +6,7 @@ on: [push, workflow_dispatch]
 jobs:
   build-video:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 240
 
     steps:
       - uses: actions/checkout@v4
@@ -96,6 +97,7 @@ jobs:
                       str(clip)
                   ], f'Create silent pause for scene {index + 1}')
                   scene['durationInSeconds'] = round(seconds, 2)
+
               else:
                   if speaker == 'student':
                       voice, rate, pitch = 'ur-PK-UzmaNeural', '+2%', '+18Hz'
@@ -132,12 +134,12 @@ jobs:
                       '-i', str(raw_clip), '-ar', '24000', '-ac', '1',
                       '-c:a', 'libmp3lame', '-b:a', '96k', str(clip)
                   ], f'Normalize scene {index + 1} audio')
+
                   scene['durationInSeconds'] = round(MP3(str(clip)).info.length, 2)
 
               if not clip.exists() or clip.stat().st_size == 0:
                   raise RuntimeError(f'Audio file missing for scene {index + 1}')
 
-              # Absolute paths make FFmpeg concat independent of the list-file location.
               concat_entries.append(f"file '{clip.resolve()}'")
               print(f"[NIO] Scene {index + 1} ready ({scene['durationInSeconds']} sec)", flush=True)
 
@@ -181,7 +183,7 @@ jobs:
           retention-days: 7
 
       - name: Render YouTube Short
-        timeout-minutes: 30
+        timeout-minutes: 180
         run: |
           npx remotion render src/index.ts IslamicVideo out/video.mp4 --bundle-cache=false --gl=swiftshader --concurrency=1
 
