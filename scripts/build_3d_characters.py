@@ -68,7 +68,13 @@ def build(role):
                 rig.pose.bones['Arm.L'].rotation_euler[1]=.42 if frame==24 else 0; rig.pose.bones['Head'].rotation_euler[0]=-.035 if frame==24 else 0
             for bn in ('Spine','Head','Arm.L','Arm.R'): rig.pose.bones[bn].keyframe_insert(data_path='rotation_euler',frame=frame,group=bn)
         rig.animation_data.action=action
-        bpy.ops.nla.action_pushdown()
+                track = rig.animation_data.nla_tracks.new()
+        track.name = action_name
+        strip = track.strips.new(action_name, 1, action)
+        strip.name = action_name
+        strip.blend_type = 'REPLACE'
+        strip.extrapolation = 'NOTHING'
+        rig.animation_data.action = None
     os.makedirs('public/assets',exist_ok=True)
     bpy.ops.object.select_all(action='DESELECT'); rig.select_set(True)
     for o in bpy.context.scene.objects:
