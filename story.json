@@ -1,61 +1,67 @@
+
 {
-  "title": "سچائی کا انعام | Islamic Moral Story",
+  "title": "قرآن مجید میں کتنی سورتیں ہیں؟",
   "voice": "ur-PK-AsadNeural",
   "scenes": [
     {
       "speaker": "teacher",
-      "text": "بچو! آج میں آپ کو ایک سچے اور ایماندار بچے کی کہانی سناؤں گا۔",
-      "durationInSeconds": 7
-    },
-    {
-      "speaker": "teacher",
-      "text": "ایک دن احمد کو مدرسے کے صحن میں پیسوں سے بھرا بٹوا ملا۔",
-      "durationInSeconds": 6
-    },
-    {
-      "speaker": "student",
-      "text": "استاد محترم! کیا احمد نے وہ بٹوا اپنے پاس رکھ لیا؟",
-      "durationInSeconds": 6
-    },
-    {
-      "speaker": "teacher",
-      "text": "نہیں بیٹا! اس نے سوچا کہ یہ کسی کی امانت ہے۔",
+      "text": "بچو! آج کا سوال ہے، قرآن مجید میں کل کتنی سورتیں ہیں؟",
       "durationInSeconds": 6
     },
     {
       "speaker": "silent",
-      "text": "ذرا سوچیں! آپ احمد کی جگہ ہوتے تو کیا کرتے؟",
+      "text": "کیا آپ کو معلوم ہے؟",
       "durationInSeconds": 5
     },
     {
       "speaker": "student",
-      "text": "میں بھی بٹوا استاد کو دیتا تاکہ اصل مالک تک پہنچ جائے۔",
-      "durationInSeconds": 6
+      "text": "استاد محترم! کیا میں اس سوال کا جواب دے سکتا ہوں؟",
+      "durationInSeconds": 5
     },
     {
       "speaker": "teacher",
-      "text": "شاباش! احمد نے بھی بٹوا استاد کے حوالے کر دیا۔",
-      "durationInSeconds": 6
-    },
-    {
-      "speaker": "teacher",
-      "text": "استاد نے مالک کو بٹوا واپس کیا اور احمد کی ایمانداری کو سراہا۔",
-      "durationInSeconds": 7
+      "text": "جی بیٹا! ضرور، آپ اپنا جواب بتائیے۔",
+      "durationInSeconds": 4
     },
     {
       "speaker": "student",
-      "text": "استاد محترم! ہمیں ہمیشہ سچ بولنا اور امانت کی حفاظت کرنی چاہیے۔",
-      "durationInSeconds": 6
+      "text": "قرآن مجید میں ایک سو چودہ سورتیں ہیں۔",
+      "durationInSeconds": 5
     },
     {
       "speaker": "teacher",
-      "text": "بالکل بیٹا! ایمانداری ایک بہترین اخلاقی خوبی ہے۔",
-      "durationInSeconds": 6
+      "text": "بالکل صحیح! ماشاءاللہ، آپ نے بہت خوبصورت جواب دیا۔",
+      "durationInSeconds": 5
     },
     {
       "speaker": "teacher",
-      "text": "پیارے بچو! آپ احمد کی جگہ ہوتے تو کیا کرتے؟ جواب کمنٹس میں دیں۔",
-      "durationInSeconds": 8
+      "text": "قرآن مجید کی سب سے لمبی سورت سورۃ البقرہ ہے۔",
+      "durationInSeconds": 5
+    },
+    {
+      "speaker": "teacher",
+      "text": "اس مبارک سورت میں دو سو چھیاسی آیات ہیں۔",
+      "durationInSeconds": 5
+    },
+    {
+      "speaker": "teacher",
+      "text": "جبکہ سب سے چھوٹی سورت سورۃ الکوثر ہے۔",
+      "durationInSeconds": 5
+    },
+    {
+      "speaker": "teacher",
+      "text": "اس مختصر سورت میں صرف تین آیات ہیں۔",
+      "durationInSeconds": 4
+    },
+    {
+      "speaker": "teacher",
+      "text": "پیارے بچو! کیا آپ کو یہ معلومات پہلے سے معلوم تھیں؟",
+      "durationInSeconds": 5
+    },
+    {
+      "speaker": "teacher",
+      "text": "اپنا جواب کمنٹ میں ضرور لکھیے اور علم دوسروں تک پہنچائیے۔",
+      "durationInSeconds": 6
     }
   ]
 }
