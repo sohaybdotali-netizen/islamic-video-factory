@@ -1,12 +1,6 @@
-
 name: Auto Render Islamic Video
 
-on:
-  push:
-  workflow_dispatch:
-
-permissions:
-  contents: read
+on: [push, workflow_dispatch]
 
 jobs:
   build-video:
@@ -14,31 +8,27 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install FFmpeg and Urdu fonts
-        timeout-minutes: 5
+      - name: Install FFmpeg, Urdu fonts and WebGL libraries
+        timeout-minutes: 10
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-noto-core
+          sudo apt-get install -y ffmpeg fonts-noto-core libgl1 libegl1 libgles2 libgbm1
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install Python packages
         timeout-minutes: 5
-        run: |
-          python -m pip install --disable-pip-version-check edge-tts mutagen
+        run: python -m pip install --disable-pip-version-check edge-tts mutagen
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Generate Urdu voices and audio
+      - name: Generate Urdu voices and scene audio
         timeout-minutes: 20
         run: |
           python -u - <<'PY'
@@ -49,31 +39,25 @@ jobs:
           from pathlib import Path
           from mutagen.mp3 import MP3
 
-          PUBLIC = Path("public")
-          PUBLIC.mkdir(exist_ok=True)
+          public = Path('public')
+          public.mkdir(parents=True, exist_ok=True)
 
-          with open("story.json", "r", encoding="utf-8") as file:
+          with open('story.json', 'r', encoding='utf-8') as file:
               data = json.load(file)
 
-          scenes = data.get("scenes")
-
+          scenes = data.get('scenes')
           if not isinstance(scenes, list) or not scenes:
-              raise ValueError("story.json has no valid scenes")
+              raise ValueError('story.json must contain a non-empty scenes array')
 
-          def run_command(command, label, timeout=120):
-              print(f"\n[NIO] {label}", flush=True)
-              subprocess.run(
-                  command,
-                  check=True,
-                  timeout=timeout
-              )
+          def run_checked(command, label, timeout=120):
+              print(f'\n[NIO] {label}', flush=True)
+              subprocess.run(command, check=True, timeout=timeout)
 
           def clean_urdu_tts(text):
               text = re.sub(r'[\u064B-\u065F\u0670]', '', str(text))
               text = text.replace('ﷺ', ' صلی اللہ علیہ وسلم ')
               text = text.replace('ؓ', ' رضی اللہ عنہ ')
               text = text.replace('ؑ', ' علیہ السلام ')
-
               replacements = {
                   'قرآنِ': 'قرآن',
                   'ویڈیو': 'وڈیو',
@@ -89,188 +73,117 @@ jobs:
                   '۔': '. ',
                   '،': ', '
               }
-
               for old, new in replacements.items():
                   text = text.replace(old, new)
-
               text = re.sub(r'\s+', ' ', text).strip()
-
               if text and text[-1] not in '.؟!?':
                   text += '.'
-
               return text
 
-          concat_files = []
+          concat_entries = []
 
           for index, scene in enumerate(scenes):
-
               speaker = scene.get('speaker', 'teacher')
-              final_clip = PUBLIC / f"scene_{index}.mp3"
-
-              print(
-                  f"\n[NIO] Scene {index + 1}/{len(scenes)} | {speaker}",
-                  flush=True
-              )
+              clip = public / f'scene_{index}.mp3'
+              print(f'\n[NIO] Scene {index + 1}/{len(scenes)} - {speaker}', flush=True)
 
               if speaker == 'silent':
-
-                  wait_seconds = max(
-                      1.0,
-                      float(scene.get('durationInSeconds', 5))
-                  )
-
-                  run_command([
-                      'ffmpeg', '-hide_banner', '-loglevel', 'error',
-                      '-y',
-                      '-f', 'lavfi',
-                      '-i', 'anullsrc=r=24000:cl=mono',
-                      '-t', str(wait_seconds),
-                      '-c:a', 'libmp3lame',
-                      '-b:a', '96k',
-                      str(final_clip)
-                  ], f"Creating silent scene {index + 1}", 60)
-
-                  scene['durationInSeconds'] = round(wait_seconds, 2)
-
+                  seconds = max(1.0, float(scene.get('durationInSeconds', 5)))
+                  run_checked([
+                      'ffmpeg', '-hide_banner', '-loglevel', 'error', '-y',
+                      '-f', 'lavfi', '-i', 'anullsrc=r=24000:cl=mono',
+                      '-t', str(seconds), '-c:a', 'libmp3lame', '-b:a', '96k',
+                      str(clip)
+                  ], f'Create silent pause for scene {index + 1}')
+                  scene['durationInSeconds'] = round(seconds, 2)
               else:
-
                   if speaker == 'student':
-                      voice = 'ur-PK-UzmaNeural'
-                      rate = '+2%'
-                      pitch = '+18Hz'
+                      voice, rate, pitch = 'ur-PK-UzmaNeural', '+2%', '+18Hz'
                   else:
                       voice = data.get('voice', 'ur-PK-AsadNeural')
-                      rate = '-8%'
-                      pitch = '-3Hz'
+                      rate, pitch = '-8%', '-3Hz'
 
-                  raw_text = scene.get('ttsText') or scene.get('text', '')
-                  spoken = clean_urdu_tts(raw_text)
-
+                  spoken = clean_urdu_tts(scene.get('ttsText') or scene.get('text', ''))
                   if not spoken:
-                      raise ValueError(
-                          f"Scene {index + 1} contains no speech text"
-                      )
+                      raise ValueError(f'Scene {index + 1} has no speech text')
 
-                  raw_clip = PUBLIC / f"scene_{index}_raw.mp3"
-
+                  raw_clip = public / f'scene_{index}_raw.mp3'
                   command = [
-                      'edge-tts',
-                      '--voice', voice,
-                      f'--rate={rate}',
-                      f'--pitch={pitch}',
-                      '--text', spoken,
-                      '--write-media', str(raw_clip)
+                      'edge-tts', '--voice', voice,
+                      f'--rate={rate}', f'--pitch={pitch}',
+                      '--text', spoken, '--write-media', str(raw_clip)
                   ]
 
                   for attempt in range(1, 4):
                       try:
-                          print(
-                              f"[NIO] TTS attempt {attempt}/3 for scene {index + 1}",
-                              flush=True
-                          )
-
-                          run_command(
-                              command,
-                              f"Generating {speaker} voice",
-                              timeout=90
-                          )
-
+                          print(f'[NIO] Urdu TTS attempt {attempt}/3', flush=True)
+                          subprocess.run(command, check=True, timeout=90)
                           if not raw_clip.exists() or raw_clip.stat().st_size == 0:
-                              raise RuntimeError("TTS produced no audio file")
-
+                              raise RuntimeError('TTS returned an empty audio file')
                           break
-
-                      except (subprocess.TimeoutExpired,
-                              subprocess.CalledProcessError,
-                              RuntimeError) as error:
-
-                          print(f"[NIO] TTS attempt failed: {error}", flush=True)
-
+                      except (subprocess.TimeoutExpired, subprocess.CalledProcessError, RuntimeError) as error:
+                          print(f'[NIO] TTS attempt failed: {error}', flush=True)
                           if attempt == 3:
-                              raise RuntimeError(
-                                  f"TTS failed for scene {index + 1}"
-                              ) from error
+                              raise RuntimeError(f'TTS failed for scene {index + 1}') from error
+                          time.sleep(attempt * 3)
 
-                          time.sleep(3)
+                  run_checked([
+                      'ffmpeg', '-hide_banner', '-loglevel', 'error', '-y',
+                      '-i', str(raw_clip), '-ar', '24000', '-ac', '1',
+                      '-c:a', 'libmp3lame', '-b:a', '96k', str(clip)
+                  ], f'Normalize scene {index + 1} audio')
+                  scene['durationInSeconds'] = round(MP3(str(clip)).info.length, 2)
 
-                  raw_duration = MP3(str(raw_clip)).info.length
-                  padded_duration = raw_duration + 0.35
+              if not clip.exists() or clip.stat().st_size == 0:
+                  raise RuntimeError(f'Audio file missing for scene {index + 1}')
 
-                  run_command([
-                      'ffmpeg', '-hide_banner', '-loglevel', 'error',
-                      '-y',
-                      '-i', str(raw_clip),
-                      '-af', 'apad=pad_dur=0.35',
-                      '-t', str(padded_duration),
-                      '-ar', '24000',
-                      '-ac', '1',
-                      '-c:a', 'libmp3lame',
-                      '-b:a', '96k',
-                      str(final_clip)
-                  ], f"Preparing scene {index + 1} audio", 60)
+              # Absolute paths make FFmpeg concat independent of the list-file location.
+              concat_entries.append(f"file '{clip.resolve()}'")
+              print(f"[NIO] Scene {index + 1} ready ({scene['durationInSeconds']} sec)", flush=True)
 
-                  actual_duration = MP3(str(final_clip)).info.length
-                  scene['durationInSeconds'] = round(actual_duration, 2)
+          concat_file = public / 'list.txt'
+          concat_file.write_text('\n'.join(concat_entries), encoding='utf-8')
 
-              if not final_clip.exists() or final_clip.stat().st_size == 0:
-                  raise RuntimeError(
-                      f"Audio file missing for scene {index + 1}"
-                  )
-
-              # Use an absolute path to avoid FFmpeg path ambiguity.
-              concat_files.append(
-                  f"file '{final_clip.resolve()}'"
-              )
-
-              print(
-                  f"[NIO] Scene {index + 1} complete: "
-                  f"{scene['durationInSeconds']} seconds",
-                  flush=True
-              )
-
-          list_file = PUBLIC / "list.txt"
-
-          list_file.write_text(
-              '\n'.join(concat_files),
-              encoding='utf-8'
-          )
-
-          voiceover = PUBLIC / "voiceover.mp3"
-
-          run_command([
-              'ffmpeg', '-hide_banner', '-loglevel', 'error',
-              '-y',
-              '-f', 'concat',
-              '-safe', '0',
-              '-i', str(list_file.resolve()),
-              '-ar', '24000',
-              '-ac', '1',
-              '-c:a', 'libmp3lame',
-              '-b:a', '96k',
+          voiceover = public / 'voiceover.mp3'
+          run_checked([
+              'ffmpeg', '-hide_banner', '-loglevel', 'error', '-y',
+              '-f', 'concat', '-safe', '0', '-i', str(concat_file.resolve()),
+              '-ar', '24000', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '128k',
               str(voiceover)
-          ], "Combining all scene audio", 180)
+          ], 'Combine Urdu voiceover', timeout=180)
 
           if not voiceover.exists() or voiceover.stat().st_size == 0:
-              raise RuntimeError("Combined voiceover was not generated")
+              raise RuntimeError('Combined voiceover was not generated')
 
-          with open(PUBLIC / "story.json", "w", encoding="utf-8") as file:
+          with open(public / 'story.json', 'w', encoding='utf-8') as file:
               json.dump(data, file, ensure_ascii=False, indent=2)
 
-          print("\n[NIO] Voice generation completed successfully.", flush=True)
-          print(f"[NIO] Total scenes: {len(scenes)}", flush=True)
-          print(f"[NIO] Voiceover size: {voiceover.stat().st_size} bytes", flush=True)
+          print(f'\n[NIO] Voice generation complete: {len(scenes)} scenes', flush=True)
+          print(f'[NIO] Voiceover size: {voiceover.stat().st_size} bytes', flush=True)
           PY
 
       - name: Install Node dependencies
         timeout-minutes: 10
+        run: npm install --no-audit --no-fund
+
+      - name: Render first 3D preview frame
+        timeout-minutes: 10
         run: |
-          npm install --no-audit --no-fund
+          mkdir -p out
+          npx remotion still src/index.ts IslamicVideo out/3d-preview.png --frame=0 --gl=swiftshader --bundle-cache=false
+
+      - name: Upload 3D preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: Islamic-3D-Classroom-Preview
+          path: out/3d-preview.png
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Render YouTube Short
         timeout-minutes: 30
         run: |
-          mkdir -p out
-          npx remotion render src/index.ts IslamicVideo out/video.mp4 --bundle-cache=false
+          npx remotion render src/index.ts IslamicVideo out/video.mp4 --bundle-cache=false --gl=swiftshader --concurrency=1
 
       - name: Verify generated video
         run: |
