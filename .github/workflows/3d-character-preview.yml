@@ -37,12 +37,10 @@ jobs:
           test -s public/assets/ustad.glb
           test -s public/assets/student.glb
           ls -lh public/assets/*.glb
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: npm
 
       - name: Install project dependencies
         run: npm install --no-audit --no-fund
